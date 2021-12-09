@@ -52,12 +52,8 @@ class Deck
 
   attr_accessor :deck
 
-  def initialize
-    @deck = []
-    deck_fill
-  end
-
   def deck_fill
+    @deck = []
     Card.suits.each do |suit|
       Card.ranks.each do |rank, value|
         @deck << Card.new(rank, suit, value)
@@ -67,7 +63,7 @@ class Deck
   end
 
   def take_one_card
-    @desk.shift
+    @deck.shift
   end
 
 end
@@ -88,7 +84,6 @@ class Hand
   end
 
   def take_card(card)
-    #raise if maximum_cards
     @cards << card
   end
 
@@ -96,22 +91,30 @@ end
 
 
 class Player
-  attr_accessor :name, :bank 
+  attr_accessor :name, :deck, :money, :hand
 
-  def initialize(name)
+  def initialize(name, deck)
     @name = name
     @bank = Bank.new
     @hand = Hand.new
+    @deck = deck
+    @money = 100
   end
 
-  def add_card
+  def take_one_card
     @hand.take_card(@deck.take_one_card)
+  end
+
+  def take_two_card
+    take_one_card
+    take_one_card
   end
 
 end
 
 class Dealer < Player
-  def initialize(name = 'Dealer')
+
+  def initialize(name, deck)
     super
   end
 end
@@ -119,20 +122,29 @@ end
 class Game
  attr_accessor :money, :deck, :dealer, :player
 
-  def initialize
-    @money = Bank.new
-    @deck = Deck.new
-    @dealer = Dealer.new
-    @player ||= create
-  end
-
-  def create
-    name = "Darkhan"
-    @player = Player.new(name)
-  end
-
   def new
-    @player.add_card
+    game_table
+    create_players
+  end
+
+  def game_table
+    @money ||= Bank.new
+    @deck ||= Deck.new
+    @deck.deck_fill
+    @dealer ||= create_players
+    @player ||= create_players
+  end
+
+  def create_players
+    player_name = "Darkhan"
+    @player = Player.new(player_name, @deck)
+    dealer_name = "Dealer"
+    @dealer = Dealer.new(dealer_name, @deck)
+  end
+
+  def first
+    @player.take_two_card
+    @dealer.take_two_card
   end
 
 end
