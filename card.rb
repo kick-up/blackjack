@@ -8,7 +8,7 @@ class Card
 
   def self.ranks
     { 'A' => 11, '2' => 2, '3'=> 3, '4' => 4, '5' => 5, '6' => 6,
-    '7' => 7, '8' => 8, '9' => 9, 'T' => 10, 'J' => 10, 'Q' => 10, 'K' => 10 }
+    '7' => 7, '8' => 8, '9' => 9, '10' => 10, 'J' => 10, 'Q' => 10, 'K' => 10 }
   end
 
 
@@ -25,10 +25,10 @@ end
 
 class Bank
 
-  attr_reader :money
+  attr_accessor :money
 
   def initialize
-    @money = money
+    @money = 0
   end
 
   def put(bet)
@@ -36,7 +36,7 @@ class Bank
   end
 
   def info
-    "На счету: #{@money}"
+    "Банк игры: #{@money}"
   end
 
   def withdraw_money(sum)
@@ -87,22 +87,26 @@ class Hand
     @cards << card
   end
 
+  def show
+    @cards.map(&:to_s)
+  end
+
 end
 
-
 class Player
-  attr_accessor :name, :deck, :money, :hand
+  attr_accessor :name, :deck, :money, :hand, :bank
 
-  def initialize(name, deck)
+  def initialize(name)
     @name = name
-    @bank = Bank.new
+    #@bank = Bank.new
     @hand = Hand.new
-    @deck = deck
+    @deck = Deck.new
+    @deck.deck_fill
     @money = 100
   end
 
   def take_one_card
-    @hand.take_card(@deck.take_one_card)
+    @hand.take_card(deck.take_one_card)
   end
 
   def take_two_card
@@ -110,21 +114,40 @@ class Player
     take_one_card
   end
 
+  def card_total
+    @hand.total
+  end
+
+  def place_a_bet
+     @money -= 10
+  end
+
+  def show_card
+    @hand.show
+  end
+
+  def info
+    "#{name}: Карты: #{show_card} Очки:(#{hand.total}) Остаток денег на счету: #{@money}"
+  end
+
 end
 
 class Dealer < Player
 
-  def initialize(name, deck)
+  def initialize(name)
     super
   end
 end
 
 class Game
+
  attr_accessor :money, :deck, :dealer, :player
 
   def new
     game_table
     create_players
+    hand_out_cards
+    show_list
   end
 
   def game_table
@@ -136,15 +159,37 @@ class Game
   end
 
   def create_players
+    puts "Введите ваше имя"
     player_name = "Darkhan"
-    @player = Player.new(player_name, @deck)
+    @player = Player.new(player_name)
     dealer_name = "Dealer"
-    @dealer = Dealer.new(dealer_name, @deck)
+    @dealer = Dealer.new(dealer_name)
   end
 
-  def first
+  def hand_out_cards
     @player.take_two_card
     @dealer.take_two_card
+    @money.put(20)
+    @player.place_a_bet
+    @dealer.place_a_bet
+  end
+
+  def show_list
+    puts @player.info
+    puts @dealer.info  
+    puts @money.info
+  end
+
+  def choice
+    @choice = {"1": "Пропустить","2": "Взять карту", "3": "Открыть карты"}
+    choice = gets.chomp.to_sym
+    when 1 then 
+    when 2 then 
+    when 3 then 
+    end
+  end
+
+  
   end
 
 end
