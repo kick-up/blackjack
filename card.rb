@@ -130,6 +130,10 @@ class Player
     "#{name}: Карты: #{show_card} Очки:(#{hand.total}) Остаток денег на счету: #{@money}"
   end
 
+  def money?
+    @money.zero?
+  end
+
 end
 
 class Dealer < Player
@@ -139,15 +143,27 @@ class Dealer < Player
   end
 end
 
+
 class Game
 
  attr_accessor :money, :deck, :dealer, :player
+
+ BJ = 21
 
   def new
     game_table
     create_players
     hand_out_cards
-    show_list
+    loop do 
+      show_list
+      player_action
+      break if @player.open_hand
+
+      dealer_action
+      break if @player.hand.maximum_cards? && @dealer.hand.maximum_cards?
+    end
+    open_hand
+    farther
   end
 
   def game_table
@@ -156,6 +172,7 @@ class Game
     @deck.deck_fill
     @dealer ||= create_players
     @player ||= create_players
+    @step = {"1": "Пропустить ход", "2": "Взять карту", "3": "Открыть карту"}
   end
 
   def create_players
@@ -167,11 +184,60 @@ class Game
   end
 
   def hand_out_cards
+    puts "Игра начинается, раздается по две карты"
     @player.take_two_card
     @dealer.take_two_card
     @money.put(20)
     @player.place_a_bet
     @dealer.place_a_bet
+  end
+
+  def player_action
+    player_step
+    action = gets.chomp.to_sym
+    #......
+    # .....
+  end
+ 
+  def dealer_action
+    puts "Ход диллера"
+    @dealer.take_one_card if @dealer.total < 17
+  end
+
+  def player_win
+    puts "Игрок выграл"
+    @player
+    #.....
+  end
+
+  def dealer_win
+    @dealer
+    #....
+  end
+
+  def draw
+    puts "Ничья"
+    # ....
+  end
+
+  def farther
+    if @player.money? && @dealer.money?
+      puts "Еще одна раздача"
+    else
+      puts "У вас не достаточно средств продолжить игру"
+    end
+  end
+
+  def open_hand
+    puts "Открыть карты"
+    @dealer.show_card
+    dealer_total = @dealer.total
+    player_total = @player.total
+    return draw if dealer_total == player_total
+    return draw if dealer_total > BJ && player_total > BJ
+    return dealer_win if player_total > BJ
+
+    player_win
   end
 
   def show_list
@@ -180,16 +246,11 @@ class Game
     puts @money.info
   end
 
-  def choice
-    @choice = {"1": "Пропустить","2": "Взять карту", "3": "Открыть карты"}
-    choice = gets.chomp.to_sym
-    when 1 then 
-    when 2 then 
-    when 3 then 
+  def player_step
+    puts "Выберите следующее действие:"
+    @step.each do |index,value|
+      puts "#{index} - #{value}"
     end
-  end
-
-  
   end
 
 end
