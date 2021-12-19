@@ -3,17 +3,23 @@ require_relative './card'
 class Deck
   attr_accessor :deck
 
-  def deck_fill
+  def initialize
     @deck = []
-    Card.suits.each do |suit|
-      Card.ranks.each do |rank, value|
-        @deck << Card.new(rank, suit, value)
-      end
-    end
-    @deck.shuffle!
+    deck_fill
+    @deck.shuffle!.reverse!.shuffle!
   end
 
-  def take_one_card
-    @deck.shift
+
+  def deck_fill
+    Card.suits.each do |suit|
+      Card.ranks.each do |rank|
+        @deck << Card.new(rank: rank, suit: suit)
+      end
+    end
+    #@deck.shuffle!
+  end
+
+  def take_card(value = 1)
+     @deck.pop(value)
   end
 end

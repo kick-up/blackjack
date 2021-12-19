@@ -1,27 +1,34 @@
 class Hand 
-  attr_accessor :cards
-
+  attr_accessor :hand
   def initialize
-    @cards = []
+    clear
   end
 
   def clear
-    @cards = []
+    @hand = []
   end
 
-  def total
-    total = cards.map {|card| card.value}.reduce(:+)
+   def take_card(card)
+    @hand << card
+  end
+
+  def score
+    result = 0
+    @hand.each do |card|
+      result += if result + card.score <= 21
+                  card.score
+                else
+                  card.ace? ? card.low_ace_score : card.score
+                end
+    end
+    result
   end
 
   def maximum_cards?
-    @cards.length == 3
+    @hand.length == 3
   end
 
-  def take_card(card)
-    @cards << card
-  end
-
-  def show
-    @cards.map(&:to_s)
+  def show_cards
+    @hand.map(&:to_s)
   end
 end

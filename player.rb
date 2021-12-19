@@ -3,36 +3,41 @@ require_relative './hand'
 require_relative './deck'
 
 class Player
-  attr_accessor :name, :deck, :money, :hand, :bank
+  attr_accessor :name, :deck, :money, :hand
 
-  def initialize(name)
+  def initialize(name, deck)
     @name = name
-    @bank = Bank.new
+    @deck = deck
     @hand = Hand.new
-    @deck = Deck.new
-    @deck.deck_fill
     @money = 100
+    init
   end
 
-  def take_one_card
-    @hand.take_card(deck.take_one_card)
-  end
+  #def take_card
+   # @hand.take_card(deck.take_card)
+  #end
 
-  def take_two_card
-    take_one_card
-    take_one_card
-  end
+  #def take_two_card
+   # @hand.clear
+    #take_one_card
+    #take_one_card
+  #end
 
   def place_a_bet
     @money -= 10
+    10
+  end
+
+  def score
+    @hand.score
   end
 
   def show_card
-    @hand.show
+    @hand.show_cards
   end
 
   def info
-    "#{name}: Карты: #{show_card} Очки:(#{hand.total}) Деньги на счету: #{@money}"
+    "#{name}: Карты: #{show_card} Очки:(#{hand.score}) Деньги на счету: #{@money}"
   end
 
   def money?
@@ -55,7 +60,7 @@ class Player
     @open_hand = true
   end
 
-  def hidden
+  def init
     @open_hand = false
   end
 
