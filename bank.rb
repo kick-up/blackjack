@@ -1,27 +1,29 @@
+# frozen_string_literal: true
+
 class Bank
-  attr_accessor :money
+  attr_reader :money
 
   def initialize
     @money = 0
   end
 
-  def put(bet)
+  def add(bet)
     @money += bet
   end
 
   def info
-    "Банк игры: #{@money}"
+    "Банк: #{@money}"
   end
 
-  def withdraw_money
+  def all_money
     bank = @money
     @money = 0
-    bank  
+    bank
   end
 
-  def half_stake
-    half_stake = @money / 2
-    @money = 0
-    half_stake
-  end 
+  def half_money
+    half_bank = @money / 2
+    @money -= half_bank
+    half_bank
+  end
 end

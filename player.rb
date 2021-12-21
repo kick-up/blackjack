@@ -1,71 +1,27 @@
-require_relative './bank'
-require_relative './hand'
-require_relative './deck'
+# frozen_string_literal: true
 
-class Player
-  attr_accessor :name, :deck, :money, :hand
+class Player < Base
+  attr_reader :name
 
-  def initialize(name, deck)
+  def initialize(deck, name)
     @name = name
-    @deck = deck
-    @hand = Hand.new
-    @money = 100
-    init
+    cards_hide
+    super deck
   end
 
-  #def take_card
-   # @hand.take_card(deck.take_card)
-  #end
-
-  #def take_two_card
-   # @hand.clear
-    #take_one_card
-    #take_one_card
-  #end
-
-  def place_a_bet
-    @money -= 10
-    10
+  def open_cards
+    @open_cards = true
   end
 
-  def score
-    @hand.score
-  end
-
-  def show_card
-    @hand.show_cards
+  def cards_hide
+    @open_cards = false
   end
 
   def info
-    "#{name}: Карты: #{show_card} Очки:(#{hand.score}) Деньги на счету: #{@money}"
+    "#{@name}: #{show_cards} (#{score}). Money: #{@money}"
   end
 
-  def money?
-    @money.zero?
+  def skip
+    puts 'Пропуск хода...'
   end
-
-  def take_money(money)
-    @money += money
-  end
-
-  def maximum_cards?
-    @hand.maximum_cards?
-  end
-
-  def open_hand?
-    @open_hand
-  end
-
-  def open_hand
-    @open_hand = true
-  end
-
-  def init
-    @open_hand = false
-  end
-
-  def miss
-    puts "Вы пропускайте ход"
-  end
-
 end

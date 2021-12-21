@@ -1,21 +1,17 @@
-class Dealer < Player
+# frozen_string_literal: true
 
-  def initialize(name,deck)
-      @name = name
-      @deck = deck
-      super
+class Dealer < Base
+  def initialize(deck)
+    @hide = true
+    super deck
   end
 
   def show_cards!
     @hide = false
   end
 
-  def hide_cards!
-    @hide = true
-  end
-
-  def information
-    "Дилер: #{show_cards} (#{calculate_filter}). Money: #{@money}"
+  def info
+    "Дилер: #{show_cards} (#{show_value}). Money: #{@money}"
   end
 
   def show_cards
@@ -25,16 +21,16 @@ class Dealer < Player
   end
 
   def show_hide_cards
-    @hand.show_cards.map { |_| "*" }
+    @hand.show_cards.map { |_| '*' }
   end
 
-  def calculate_filter
+  def show_value
     return score unless @hide
 
-    show_hide_calculate
+    show_hide_value
   end
 
-  def show_hide_calculate
-    "*"
+  def show_hide_value
+    '*'
   end
 end

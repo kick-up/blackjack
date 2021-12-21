@@ -1,5 +1,6 @@
-class Hand 
-  attr_accessor :hand
+# frozen_string_literal: true
+
+class Hand
   def initialize
     clear
   end
@@ -8,7 +9,7 @@ class Hand
     @hand = []
   end
 
-   def take_card(card)
+  def add(card)
     @hand << card
   end
 
@@ -22,10 +23,6 @@ class Hand
                 end
     end
     result
-  end
-
-  def maximum_cards?
-    @hand.length == 3
   end
 
   def show_cards

@@ -1,25 +1,27 @@
-require_relative './card'
+# frozen_string_literal: true
 
 class Deck
-  attr_accessor :deck
+  attr_reader :deck
 
-  def initialize
-    @deck = []
-    deck_fill
-    @deck.shuffle!.reverse!.shuffle!
+  def take_one_card
+    @deck.pop
   end
 
+  def create
+    new_deck
+    shuffle
+  end
 
-  def deck_fill
+  def shuffle
+    @deck.shuffle!
+  end
+
+  def new_deck
+    @deck = []
     Card.suits.each do |suit|
       Card.ranks.each do |rank|
-        @deck << Card.new(rank: rank, suit: suit)
+        @deck <<= Card.new(rank: rank, suit: suit)
       end
     end
-    #@deck.shuffle!
-  end
-
-  def take_card(value = 1)
-     @deck.pop(value)
   end
 end
